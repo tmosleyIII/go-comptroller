@@ -9,6 +9,10 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+var (
+	DBCon *sql.DB
+)
+
 func InitDB(dataSourceName string) {
 	os.Remove(path.Join(dataSourceName, "data.db"))
 

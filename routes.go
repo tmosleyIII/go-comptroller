@@ -20,4 +20,16 @@ var routes = Routes{
 		"/",
 		Index,
 	},
+	Route{
+		"HealthHandler",
+		"GET",
+		"/healthz",
+		HealthHandler,
+	},
+	Route{
+		"ReadinessHandler",
+		"GET",
+		"/readiness",
+		ReadinessHandler,
+	},
 }

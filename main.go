@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"flag"
 	"fmt"
 	"log"
@@ -21,6 +22,7 @@ var (
 	projectID   string
 	databaseDir string
 	traceClient *trace.Client
+	db          *sql.DB
 )
 
 func main() {
