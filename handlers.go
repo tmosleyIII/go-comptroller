@@ -29,11 +29,11 @@ func ReadinessHandler(w http.ResponseWriter, r *http.Request) {
 	ok := true
 	errMsg := ""
 	if db != nil {
-		_, err := db.Query("SELECT 1;")
+		_, err := db.Query("SELECT 1 from foo;")
 		if err != nil {
 			ok = false
 			errMsg += "Database not ok."
-			log.Fatal(err)
+			log.Println(err)
 		}
 	}
 	if db == nil {

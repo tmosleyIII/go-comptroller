@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"flag"
 	"fmt"
 	"log"
@@ -12,8 +11,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/tmosleyiii/go-comptroller/models"
-
 	"cloud.google.com/go/trace"
 )
 
@@ -22,7 +19,6 @@ var (
 	projectID   string
 	databaseDir string
 	traceClient *trace.Client
-	db          *sql.DB
 )
 
 func main() {
@@ -30,7 +26,6 @@ func main() {
 	flag.StringVar(&projectID, "project-id", "", "App Engine Project ID")
 	flag.StringVar(&databaseDir, "database-dir", "", "Application Database")
 	flag.Parse()
-	models.InitDB(databaseDir)
 	log.Println("HTTP service listening on ", httpAddr)
 
 	var err error
@@ -49,16 +44,20 @@ func main() {
 
 	router := NewRouter()
 	server := &http.Server{Addr: httpAddr, Handler: router}
+
 	go func() {
 		log.Fatal(server.ListenAndServe())
 	}()
+
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 	s := <-signalChan
+
 	log.Println(fmt.Sprintf("Captured %v, exiting...", s))
 	shutdownCtx, _ := context.WithTimeout(context.Background(), 120*time.Second)
 	server.Shutdown(shutdownCtx)
 	<-shutdownCtx.Done()
+
 	log.Println(shutdownCtx.Err())
 	os.Exit(0)
 }
